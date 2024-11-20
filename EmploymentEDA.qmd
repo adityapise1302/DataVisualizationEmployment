@@ -13,19 +13,19 @@ from skimpy import skim
 ### Data Import
 
 ```{python}
-data_2011 = pd.read_csv("data_files//all_data_M_2011.csv",nrows=1000)
-data_2012 = pd.read_csv("data_files//all_data_M_2012.csv",nrows=1000)
-data_2013 = pd.read_csv("data_files//all_data_M_2013.csv",nrows=1000)
-data_2014 = pd.read_csv("data_files//all_data_M_2014.csv",nrows=1000)
-data_2015 = pd.read_csv("data_files//all_data_M_2015.csv",nrows=1000)
-data_2016 = pd.read_csv("data_files//all_data_M_2016.csv",nrows=1000)
-data_2017 = pd.read_csv("data_files//all_data_M_2017.csv",nrows=1000)
-data_2018 = pd.read_csv("data_files//all_data_M_2018.csv",nrows=1000)
-data_2019 = pd.read_csv("data_files//all_data_M_2019.csv",nrows=1000)
-data_2020 = pd.read_csv("data_files//all_data_M_2020.csv",nrows=1000)
-data_2021 = pd.read_csv("data_files//all_data_M_2021.csv",nrows=1000)
-data_2022 = pd.read_csv("data_files//all_data_M_2022.csv",nrows=1000)
-data_2023 = pd.read_csv("data_files//all_data_M_2023.csv",nrows=1000)
+data_2011 = pd.read_csv("data_files//all_data_M_2011.csv")
+data_2012 = pd.read_csv("data_files//all_data_M_2012.csv")
+data_2013 = pd.read_csv("data_files//all_data_M_2013.csv")
+data_2014 = pd.read_csv("data_files//all_data_M_2014.csv")
+data_2015 = pd.read_csv("data_files//all_data_M_2015.csv")
+data_2016 = pd.read_csv("data_files//all_data_M_2016.csv")
+data_2017 = pd.read_csv("data_files//all_data_M_2017.csv")
+data_2018 = pd.read_csv("data_files//all_data_M_2018.csv")
+data_2019 = pd.read_csv("data_files//all_data_M_2019.csv")
+data_2020 = pd.read_csv("data_files//all_data_M_2020.csv")
+data_2021 = pd.read_csv("data_files//all_data_M_2021.csv")
+data_2022 = pd.read_csv("data_files//all_data_M_2022.csv")
+data_2023 = pd.read_csv("data_files//all_data_M_2023.csv")
 ```
 
 ```{python}
@@ -35,13 +35,15 @@ data = [data_2011, data_2012, data_2013, data_2014, data_2015, data_2016, data_2
 ### Data Cleaning
 
 ```{python}
-selcols = ["occ_code","occ_title","tot_emp","a_mean","a_median"]
+selcols = ["occ_code","occ_title","tot_emp","a_mean","a_median","group"]
 
 year = 2011
 for i in range(len(data)):
   df = data[i]
   df.columns = df.columns.str.lower()
   df.columns = df.columns.str.replace(' ', '_')
+  if year >= 2017:
+    df.rename(columns={'o_group': 'group'}, inplace=True)
   df = df.loc[:,selcols]
   df["year"] = year
   data[i] = df
@@ -54,6 +56,26 @@ for i in range(1,len(data)):
   combined_df = pd.concat([combined_df,data[i]])
 ```
 
+```{python}
+combined_df = combined_df.query("group == 'major'")
+```
+
+```{python}
+combined_df["occ_code"] = combined_df["occ_code"].astype(str)
+combined_df["tot_emp"] = pd.to_numeric(combined_df["tot_emp"], errors='coerce')
+combined_df["tot_emp"] = combined_df["tot_emp"].astype("Int64")
+combined_df["a_mean"] = pd.to_numeric(combined_df["a_mean"], errors='coerce')
+combined_df["a_mean"] = combined_df["a_mean"].astype("Int64")
+combined_df["a_median"] = pd.to_numeric(combined_df["a_median"], errors='coerce')
+combined_df["a_median"] = combined_df["a_median"].astype("Int64")
+```
+
 ### EDA
 
-### 
+```{python}
+combined_df.head()
+```
+
+```{python}
+combined_df.describe()
+```

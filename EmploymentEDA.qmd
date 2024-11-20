@@ -7,6 +7,7 @@ editor: visual
 
 ```{python}
 import pandas as pd
+import numpy as np
 from skimpy import skim
 ```
 
@@ -40,6 +41,7 @@ selcols = ["occ_code","occ_title","tot_emp","a_mean","a_median","group"]
 year = 2011
 for i in range(len(data)):
   df = data[i]
+  df = df.drop_duplicates()
   df.columns = df.columns.str.lower()
   df.columns = df.columns.str.replace(' ', '_')
   if year >= 2017:

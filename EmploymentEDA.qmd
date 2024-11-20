@@ -70,6 +70,10 @@ combined_df["a_median"] = pd.to_numeric(combined_df["a_median"], errors='coerce'
 combined_df["a_median"] = combined_df["a_median"].astype("Int64")
 ```
 
+```{python}
+combined_df.dropna(inplace = True)
+```
+
 ### EDA
 
 ```{python}
@@ -78,4 +82,8 @@ combined_df.head()
 
 ```{python}
 combined_df.describe()
+```
+
+```{python}
+skim(combined_df)
 ```
